@@ -26,15 +26,19 @@ import (
 // chosenList takes a single string relating to the chosen wordlist. It is implemented as an interface to allow for the user to provide nothing as a default.
 func ReadWordList(chosenList ...string) (wordList map[int]string, err error) {
 	var fileName string
-	switch chosenList[0] {
-	case "large":
+	if len(chosenList) == 0 {
 		fileName = "./eff_large_wordlist.txt"
-	case "medium", "short2":
-		fileName = "./eff_short_wordlist_2.txt"
-	case "short", "short1":
-		fileName = "./eff_short_wordlist_1.txt"
-	default:
-		fileName = "./eff_large_wordlist.txt"
+	} else {
+		switch chosenList[0] {
+		case "large":
+			fileName = "./eff_large_wordlist.txt"
+		case "medium", "short2":
+			fileName = "./eff_short_wordlist_2.txt"
+		case "short", "short1":
+			fileName = "./eff_short_wordlist_1.txt"
+		default:
+			fileName = "./eff_large_wordlist.txt"
+		}
 	}
 
 	file, err := os.Open(fileName)
