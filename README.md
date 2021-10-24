@@ -1,2 +1,8 @@
-# go-basic-passphrase
-A super basic package for generating random passphrases
+# passphrase
+A super basic go package for generating random passphrases
+
+# Usage
+
+
+## References
+World list from https://github.com/dwyl/english-words 
