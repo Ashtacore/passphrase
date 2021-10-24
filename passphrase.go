@@ -16,24 +16,23 @@ limitations under the License.
 package passphrase
 
 import (
-	"bufio"
 	"math/rand"
-	"os"
-	"strings"
 )
 
-func GeneratePassphrase(wordCount int, prefixSuffix ...string) (passphrase string, err error) {
-	wordList, err := readStandardWordList()
+func GeneratePassphrase(length int, prefixSuffix ...string) (passphrase string, err error) {
+	wordList, err := ReadWordList()
 	if err != nil {
 		return "", err
 	}
 
-	// Create passphrase
-	for i := 0; i < wordCount; i++ {
-		passphrase += wordList[rand.Intn(len(wordList))]
-		passphrase += " "
+	// Create passphrase by rolling dice
+	for i := 0; i < length; i++ {
+		var diceRolls []int
+		for j := 0; j < 6; j++ {
+			diceRolls[j] = rand.Intn(6) + 1
+		}
+		passphrase += wordList[concatIntArray(diceRolls)]
 	}
-	passphrase = strings.TrimSuffix(passphrase, " ")
 
 	// Add prefix and suffix if provided
 	if len(prefixSuffix) > 0 {
@@ -44,39 +43,67 @@ func GeneratePassphrase(wordCount int, prefixSuffix ...string) (passphrase strin
 	}
 
 	return passphrase, nil
-
 }
 
-func GeneratePassphraseFromWordList(wordCount int, wordList []string, prefixSuffix ...string) (passphrase string, err error) {
-	// Create passphrase
-	for i := 0; i < wordCount; i++ {
-		passphrase += wordList[rand.Intn(len(wordList))]
-		passphrase += " "
-	}
-	passphrase = strings.TrimSuffix(passphrase, " ")
-
-	// Add prefix and suffix if provided
-	if len(prefixSuffix) > 0 {
-		passphrase = prefixSuffix[0] + " " + passphrase
-	}
-	if len(prefixSuffix) > 1 {
-		passphrase += " " + prefixSuffix[1]
-	}
-
-	return passphrase, nil
-
-}
-
-func readStandardWordList() (wordList []string, err error) {
-	file, err := os.Open("words_alpha.txt")
+func GenerateMediumPassphrase(length int, prefixSuffix ...string) (passphrase string, err error) {
+	wordList, err := ReadWordList("medium")
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		wordList = append(wordList, scanner.Text())
+	// Create passphrase by rolling dice
+	for i := 0; i < length; i++ {
+		var diceRolls []int
+		for j := 0; j < 4; j++ {
+			diceRolls[j] = rand.Intn(6) + 1
+		}
+		passphrase += wordList[concatIntArray(diceRolls)]
 	}
-	return wordList, scanner.Err()
+
+	// Add prefix and suffix if provided
+	if len(prefixSuffix) > 0 {
+		passphrase = prefixSuffix[0] + " " + passphrase
+	}
+	if len(prefixSuffix) > 1 {
+		passphrase += " " + prefixSuffix[1]
+	}
+
+	return passphrase, nil
+}
+
+func GenerateShortPassphrase(length int, prefixSuffix ...string) (passphrase string, err error) {
+	wordList, err := ReadWordList("short")
+	if err != nil {
+		return "", err
+	}
+
+	// Create passphrase by rolling dice
+	for i := 0; i < length; i++ {
+		var diceRolls []int
+		for j := 0; j < 4; j++ {
+			diceRolls[j] = rand.Intn(6) + 1
+		}
+		passphrase += wordList[concatIntArray(diceRolls)]
+	}
+
+	// Add prefix and suffix if provided
+	if len(prefixSuffix) > 0 {
+		passphrase = prefixSuffix[0] + " " + passphrase
+	}
+	if len(prefixSuffix) > 1 {
+		passphrase += " " + prefixSuffix[1]
+	}
+
+	return passphrase, nil
+}
+
+// credit: https://stackoverflow.com/a/44730447/13443483
+func concatIntArray(s []int) int {
+	res := 0
+	op := 1
+	for i := len(s) - 1; i >= 0; i-- {
+		res += s[i] * op
+		op *= 10
+	}
+	return res
 }
