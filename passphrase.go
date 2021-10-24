@@ -17,86 +17,60 @@ package passphrase
 
 import (
 	"math/rand"
+	"time"
+
+	"github.com/Ashtacore/passphrase/wordlists"
 )
 
-func GeneratePassphrase(length int, prefixSuffix ...string) (passphrase string, err error) {
-	wordList, err := ReadWordList()
-	if err != nil {
-		return "", err
-	}
+func GeneratePassphrase(length int, prefixSuffix ...string) (passphrase string) {
+	wordList := wordlists.ReadWordList()
 
+	return buildPassphrase(length, &wordList, prefixSuffix...)
+}
+
+func GenerateLargePassphrase(length int, prefixSuffix ...string) (passphrase string) {
+	wordList := wordlists.ReadWordList()
+
+	return buildPassphrase(length, &wordList, prefixSuffix...)
+}
+
+func GenerateMediumPassphrase(length int, prefixSuffix ...string) (passphrase string) {
+	wordList := wordlists.ReadWordList("medium")
+
+	return buildPassphrase(length, &wordList, prefixSuffix...)
+}
+
+func GenerateShortPassphrase(length int, prefixSuffix ...string) (passphrase string) {
+	wordList := wordlists.ReadWordList("short")
+
+	return buildPassphrase(length, &wordList, prefixSuffix...)
+}
+
+func buildPassphrase(length int, wordList *wordlists.Wordlist, prefixSuffix ...string) (passphrase string) {
 	// Create passphrase by rolling dice
 	for i := 0; i < length; i++ {
 		var diceRolls []int
-		for j := 0; j < 6; j++ {
-			diceRolls[j] = rand.Intn(6) + 1
+		rand.Seed(rand.Int63n(time.Now().UnixNano()))
+		for j := 0; j < wordList.Dice; j++ {
+			diceRolls = append(diceRolls, rand.Intn(6)+1)
 		}
-		passphrase += wordList[concatIntArray(diceRolls)]
+		passphrase += wordList.WordMap[concatIntArray(diceRolls)] + " "
 	}
+	//trim trailing space
+	passphrase = passphrase[:len(passphrase)-1]
 
 	// Add prefix and suffix if provided
-	if len(prefixSuffix) > 0 {
+	if len(prefixSuffix) > 0 && prefixSuffix[0] != "" {
 		passphrase = prefixSuffix[0] + " " + passphrase
 	}
-	if len(prefixSuffix) > 1 {
+	if len(prefixSuffix) > 1 && prefixSuffix[1] != "" {
 		passphrase += " " + prefixSuffix[1]
 	}
 
-	return passphrase, nil
+	return passphrase
 }
 
-func GenerateMediumPassphrase(length int, prefixSuffix ...string) (passphrase string, err error) {
-	wordList, err := ReadWordList("medium")
-	if err != nil {
-		return "", err
-	}
-
-	// Create passphrase by rolling dice
-	for i := 0; i < length; i++ {
-		var diceRolls []int
-		for j := 0; j < 4; j++ {
-			diceRolls[j] = rand.Intn(6) + 1
-		}
-		passphrase += wordList[concatIntArray(diceRolls)]
-	}
-
-	// Add prefix and suffix if provided
-	if len(prefixSuffix) > 0 {
-		passphrase = prefixSuffix[0] + " " + passphrase
-	}
-	if len(prefixSuffix) > 1 {
-		passphrase += " " + prefixSuffix[1]
-	}
-
-	return passphrase, nil
-}
-
-func GenerateShortPassphrase(length int, prefixSuffix ...string) (passphrase string, err error) {
-	wordList, err := ReadWordList("short")
-	if err != nil {
-		return "", err
-	}
-
-	// Create passphrase by rolling dice
-	for i := 0; i < length; i++ {
-		var diceRolls []int
-		for j := 0; j < 4; j++ {
-			diceRolls[j] = rand.Intn(6) + 1
-		}
-		passphrase += wordList[concatIntArray(diceRolls)]
-	}
-
-	// Add prefix and suffix if provided
-	if len(prefixSuffix) > 0 {
-		passphrase = prefixSuffix[0] + " " + passphrase
-	}
-	if len(prefixSuffix) > 1 {
-		passphrase += " " + prefixSuffix[1]
-	}
-
-	return passphrase, nil
-}
-
+// Concatenate an array of ints into a single int, used for combining dice rolls
 // credit: https://stackoverflow.com/a/44730447/13443483
 func concatIntArray(s []int) int {
 	res := 0
