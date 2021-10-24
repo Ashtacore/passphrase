@@ -42,9 +42,7 @@ func TestGeneratePassphrase(t *testing.T) {
 
 	//Check prefix and suffix functionality
 	passphrase = GeneratePassphrase(5, "prefix", "suffix")
-	passphraseArray = strings.Split(passphrase, " ")
 	passphrase2 = GeneratePassphrase(5, "", "suffix")
-	passphrase2Array = strings.Split(passphrase, " ")
 	if len(strings.Split(passphrase, " ")) != 7 || len(strings.Split(passphrase2, " ")) != 6 {
 		t.Error("Passphrase did not add prefix/suffix properly")
 	}
@@ -72,9 +70,7 @@ func TestGenerateLargePassphrase(t *testing.T) {
 
 	//Check prefix and suffix functionality
 	passphrase = GenerateLargePassphrase(5, "prefix", "suffix")
-	passphraseArray = strings.Split(passphrase, " ")
 	passphrase2 = GenerateLargePassphrase(5, "", "suffix")
-	passphrase2Array = strings.Split(passphrase, " ")
 	if len(strings.Split(passphrase, " ")) != 7 || len(strings.Split(passphrase2, " ")) != 6 {
 		t.Error("Passphrase did not add prefix/suffix properly")
 	}
@@ -102,9 +98,7 @@ func TestGenerateMediumPassphrase(t *testing.T) {
 
 	//Check prefix and suffix functionality
 	passphrase = GenerateMediumPassphrase(5, "prefix", "suffix")
-	passphraseArray = strings.Split(passphrase, " ")
 	passphrase2 = GenerateMediumPassphrase(5, "", "suffix")
-	passphrase2Array = strings.Split(passphrase, " ")
 	if len(strings.Split(passphrase, " ")) != 7 || len(strings.Split(passphrase2, " ")) != 6 {
 		t.Error("Passphrase did not add prefix/suffix properly")
 	}
@@ -132,9 +126,7 @@ func TestGenerateShortPassphrase(t *testing.T) {
 
 	//Check prefix and suffix functionality
 	passphrase = GenerateShortPassphrase(5, "prefix", "suffix")
-	passphraseArray = strings.Split(passphrase, " ")
 	passphrase2 = GenerateShortPassphrase(5, "", "suffix")
-	passphrase2Array = strings.Split(passphrase, " ")
 	if len(strings.Split(passphrase, " ")) != 7 || len(strings.Split(passphrase2, " ")) != 6 {
 		t.Error("Passphrase did not add prefix/suffix properly")
 	}
